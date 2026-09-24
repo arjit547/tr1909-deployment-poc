@@ -1,27 +1,31 @@
-name: Test TR-1909 Runner
+name: TR-1909 Deployment POC
 
 on:
   workflow_dispatch:
 
 jobs:
-  test:
+  deploy:
     runs-on: self-hosted
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Test runner
-        run: |
-          echo "GitHub Runner is working"
-          whoami
-          hostname
-
-      - name: Test Kubernetes
+      - name: Show Kubernetes status
         run: |
           kubectl get nodes
           kubectl get pods -n tr1909
 
-      - name: Test Helm
+      - name: Deploy application with Helm
         run: |
-          helm version
+          kubectl create namespace tr1909 \
+            --dry-run=client \
+            -o yaml | kubectl apply -f -
+
+          helm upgrade --install demo-app ./helm/demo-app \
+            --namespace tr1909
+
+      - name: Check deployment health
+        run: |
+          chmod +x scripts/check-deployment.sh
+          ./scripts/check-deployment.sh tr1909
