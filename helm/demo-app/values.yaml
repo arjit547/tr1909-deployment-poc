@@ -3,7 +3,7 @@ replicaCount: 2
 
 image:
   repository: nginx
-  tag: "1.27"
+  tag: "does-not-exist"
 
 service:
   port: 80
