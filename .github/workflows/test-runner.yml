@@ -2,6 +2,11 @@ name: TR-1909 Deployment POC
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
+      - develop
+      - main
 
 jobs:
   deploy:
